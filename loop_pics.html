@@ -31,7 +31,7 @@
             text-align: center;
             font-size: 100px;
             color:white;
-            right:0;
+            bottom:0;
         }
         .red {
             background-color:red;
@@ -45,9 +45,9 @@
         .orange{
             background-color: orange;
         }
-        .moveLeft {
-            right:500px;
-            transition:right 3s; /* 设置图片向左移动消耗的时间*/
+        .move {
+            bottom:300px;
+            transition:bottom 3s; /* 设置图片向左移动消耗的时间*/
         }
     </style>
 </head>
@@ -73,22 +73,24 @@
             //循环播放图片的函数
             var loopPics = (function(){
                 var index=0;
-                return function(items,delay){
+                return function(pics,delay){
                     var recall = function(pic){
-                        pic.className += ' moveLeft';
+                        //给图片增加move类，调用css的transition属性播放移动动画
+                        pic.className += ' move';
                         setTimeout(function(){
-                            pic.className=pic.className.replace(' moveLeft','');
-                            for(let i=0;i<items.length;i++){
-                                if(items[i].style.zIndex==items.length){
-                                    items[i].style.zIndex=1;
+                            //取消图片的move类，图片返回原位
+                            pic.className=pic.className.replace(' move','');
+                            //改变图片组的堆叠顺序。最外的图片放到最下面，其他图片依次向外移动
+                            for(let i=0;i<pics.length;i++){
+                                if(pics[i].style.zIndex==pics.length){
+                                    pics[i].style.zIndex=1;
                                 } else {
-                                    items[i].style.zIndex=items[i].style.zIndex*1+1;
+                                    pics[i].style.zIndex=pics[i].style.zIndex*1+1;
                                 }
-                                
                             }
                             index++;
-                            if(index==items.length) index=0;
-                            recall(items[index]);
+                            if(index==pics.length) index=0;
+                            recall(pics[index]);
                         },delay);
                     };
                     recall(pics[index]);
