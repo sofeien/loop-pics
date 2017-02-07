@@ -4,14 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>图片轮播</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <!--[if lt IE9]> 
-    <script src="http://cdn.static.runoob.com/libs/html5shiv/3.7/html5shiv.min.js"></script>
-    <![endif]-->
-
+    
     <style>
         #box {
             width:506px;
@@ -47,7 +40,7 @@
         }
         .move {
             bottom:300px;
-            transition:bottom 3s; /* 设置图片移动消耗的时间*/
+            transition:bottom .5s; /* 设置图片移动消耗的时间*/
         }
     </style>
 </head>
@@ -65,6 +58,7 @@
         window.addEventListener('load',function(){
             //轮播定时器
             var looptime = null;
+			var looptime2 = null;
             
             var pics = document.getElementsByClassName('pic');
             
@@ -80,7 +74,9 @@
                     var recall = function(pic){
                         //给图片增加move类，调用css的transition属性播放移动动画
                         pic.className += ' move';
-                        looptime=setTimeout(function(){
+						index++;
+                        if(index==pics.length) index=0;
+                        looptime2=setTimeout(function(){
                             //取消图片的move类，图片返回原位
                             pic.className=pic.className.replace(' move','');
                             //改变图片组的堆叠顺序。最外的图片放到最下面，其他图片依次向外移动
@@ -91,10 +87,8 @@
                                     pics[i].style.zIndex=pics[i].style.zIndex*1+1;
                                 }
                             }
-                            index++;
-                            if(index==pics.length) index=0;
-                            recall(pics[index]);
-                        },delay);
+                        },500);
+						looptime=setTimeout(function(){recall(pics[index]);},delay+500);
                     };
                     //选择当前最顶层的图片开始轮播
                     for(let i=0;i<pics.length;i++)
@@ -107,12 +101,12 @@
                     recall(pics[index]);
                 };
             })();
-            //调用函数，循环播放。delay的时间需要大于等于css动画里设置的图片移动时间
+            //调用函数，循环播放。delay的时间等于图片轮播的间隔时间
             loopPics(pics,3000);
             //鼠标放置在图片区域时停止轮播
             document.getElementById('box').onmouseover = function(){
                 clearTimeout(looptime);
-                
+                clearTimeout(looptime2);
                 for(let i=0;i<pics.length;i++){
                     pics[i].className=pics[i].className.replace(' move','');
                 }
