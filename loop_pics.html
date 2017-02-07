@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <title>图片轮播</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!--[if lt IE9]> 
+    <script src="http://cdn.static.runoob.com/libs/html5shiv/3.7/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <style>
+        #box {
+            width:506px;
+            height:306px;
+            margin: 20px auto;
+            border:3px solid black;
+            position:relative;
+            background-color:orange;
+            overflow: hidden;
+            /*overflow: hidden;*/
+        }
+        .pic {
+            position: absolute;
+            width:500px;
+            height:300px;
+            line-height: 300px;
+            text-align: center;
+            font-size: 100px;
+            color:white;
+            right:0;
+        }
+        .red {
+            background-color:red;
+        }
+        .green {
+            background-color:green;
+        }
+        .blue {
+            background-color:blue;
+        }
+        .orange{
+            background-color: orange;
+        }
+        .moveLeft {
+            right:500px;
+            transition:right 3s; /* 设置图片向左移动消耗的时间*/
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box">
+        <div id="pic1" class="pic red">1</div>
+        <div id="pic2" class="pic green">2</div>
+        <div id="pic3" class="pic blue">3</div>
+        <div id="pic3" class="pic orange">4</div>
+    </div>
+    
+    
+    <script>
+        window.addEventListener('load',function(){
+            var pics = document.getElementsByClassName('pic');
+            
+            //为每个pic元素设置z-index的值
+            for(let i=0;i<pics.length;i++){
+                pics[i].style.zIndex = pics.length-i;
+            }
+            
+            //循环播放图片的函数
+            var loopPics = (function(){
+                var index=0;
+                return function(items,delay){
+                    var recall = function(pic){
+                        pic.className += ' moveLeft';
+                        setTimeout(function(){
+                            pic.className=pic.className.replace(' moveLeft','');
+                            for(let i=0;i<items.length;i++){
+                                if(items[i].style.zIndex==items.length){
+                                    items[i].style.zIndex=1;
+                                } else {
+                                    items[i].style.zIndex=items[i].style.zIndex*1+1;
+                                }
+                                
+                            }
+                            index++;
+                            if(index==items.length) index=0;
+                            recall(items[index]);
+                        },delay);
+                    };
+                    recall(pics[index]);
+                };
+            })();
+            //调用函数，循环播放。delay的时间需要大于等于css动画里设置的图片移动时间
+            loopPics(pics,4000);
+        });
+
+    </script>
+</body>
+
+</html>
